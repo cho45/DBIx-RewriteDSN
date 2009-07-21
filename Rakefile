@@ -15,6 +15,7 @@ task :default => :test
 desc "make test"
 task :test => ["Makefile"] do
 	sh %{make test}
+	sh %{prove -Ilib xt}
 end
 
 desc "make clean"
