@@ -79,21 +79,67 @@ DBIx::RewriteDSN - dsn rewriter for debug
 
 =head1 SYNOPSIS
 
+  use DBI;
   use DBIx::RewriteDSN -rules => q{
     dbi:SQLite:dbname=foobar dbi:SQLite:dbname=test_foobar
   };
 
   ## DBIx::RewriteDSN redefine DBI::connect and 
   ## rewrite dsn passed to DBI::connect
-  my $dbh = DBI::connect("dbi:SQLite:dbname=foobar", "", "");
+  my $dbh = DBI->connect("dbi:SQLite:dbname=foobar", "", "");
 
-  $dbh->{Driver}->{Name} #=> dbname=test_foobar
+  $dbh->{Name} #=> dbname=test_foobar
 
+External File:
+
+  use DBI;
+  use DBIx::RewriteDSN -file => "dbi_rewrite.rules";
+
+  my $dbh = DBI->connect("dbi:SQLite:dbname=foobar", "", "");
 
 =head1 DESCRIPTION
 
-DBIx::RewriteDSN is dsn rewriter like mod_rewrite.
+DBIx::RewriteDSN is dsn rewriter.
+This enables rewrite all DBI->connect based on rule text.
 
+=head1 CLASS METHODS
+
+=head2 use DBIx::RewriteDSN -file => "filename";
+
+Enable rewrites based on rules in C<filename>.
+
+=head2 use DBIx::RewriteDSN -rules => "rules";
+
+Enable rewrites based on rules.
+
+=head2 DBIx::RewriteDSN->disable
+
+Disable rewrites.
+
+=head2 DBIx::RewriteDSN->enable
+
+Re-enable rewrites.
+
+=head1 RULES
+
+Rules is like:
+
+  dbi:SQLite:dbname=foobar dbi:SQLite:dbname=foobar_test
+
+  dbi:mysql:database=([^;]+).* dbi:SQLite:dbname=$1
+
+  # fallback
+  (.*) dbi:fallback:$1
+
+=over
+
+=item All empty lines are ignored
+
+=item Matches are left, replaces are right
+
+=item All matches are regexp
+
+=back
 
 =head1 AUTHOR
 
