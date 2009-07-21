@@ -1,0 +1,54 @@
+use strict;
+use Test::More tests => 6;
+
+use File::Temp;
+use DBD::SQLite;
+
+my $fh;
+my ($db1, $db1name);
+my ($db2, $db2name);
+BEGIN {
+	$db1 = File::Temp->new;
+	$db1->close;
+	$db1name = $db1->filename;
+
+	$db2 = File::Temp->new;
+	$db2->close;
+	$db2name = $db2->filename;
+
+	$fh = File::Temp->new;
+	$fh->print(<<"	EOS");
+		dbi:rewrite:foo dbi:rewrote:foo
+		(dbi:rewrite:through) \$1
+
+		# dbi:rewrite:comment unko
+
+		dbi:SQLite:dbname=.+ dbi:SQLite:dbname=$db2name
+
+		# fallback
+		.* dbi:fallback
+	EOS
+	$fh->close;
+}
+
+use DBIx::RewriteDSN -file => $fh->filename;
+
+is DBIx::RewriteDSN::rewrite("dbi:rewrite:foo"), "dbi:rewrote:foo";
+is DBIx::RewriteDSN::rewrite("dbi:rewrite:through"), "dbi:rewrite:through";
+is DBIx::RewriteDSN::rewrite("dbi:rewrite:comment"), "dbi:fallback";
+
+my $dbh;
+
+$dbh = DBI->connect("dbi:SQLite:dbname=$db1name", "", "");
+is $dbh->{Name}, "dbname=$db2name";
+
+DBIx::RewriteDSN->disable;
+
+$dbh = DBI->connect("dbi:SQLite:dbname=$db1name", "", "");
+is $dbh->{Name}, "dbname=$db1name";
+
+DBIx::RewriteDSN->enable;
+
+$dbh = DBI->connect("dbi:SQLite:dbname=$db1name", "", "");
+is $dbh->{Name}, "dbname=$db2name";
+

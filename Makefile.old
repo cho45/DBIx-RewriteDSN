@@ -10,13 +10,14 @@
 #
 #   MakeMaker Parameters:
 
+#     ABSTRACT => q[dsn rewriter for debug]
 #     AUTHOR => q[cho45 <cho45@lowreal.net>]
 #     DIR => []
 #     DISTNAME => q[DBIx-RewriteDSN]
 #     NAME => q[DBIx::RewriteDSN]
 #     NO_META => q[1]
 #     PL_FILES => {  }
-#     PREREQ_PM => { Test::More=>q[0], Filter::Util::Call=>q[0], ExtUtils::MakeMaker=>q[6.52] }
+#     PREREQ_PM => { Test::More=>q[0], Filter::Util::Call=>q[0], DBD::SQLite=>q[0], ExtUtils::MakeMaker=>q[6.52], File::Slurp=>q[0], DBI=>q[0] }
 #     VERSION => q[0.01]
 #     dist => { PREOP=>q[$(PERL) -I. "-MModule::Install::Admin" -e "dist_preop(q($(DISTVNAME)))"] }
 #     realclean => { FILES=>q[MYMETA.yml] }
@@ -765,10 +766,13 @@ testdb_static :: testdb_dynamic
 # Creates a PPD (Perl Package Description) for a binary distribution.
 ppd :
 	$(NOECHO) $(ECHO) '<SOFTPKG NAME="$(DISTNAME)" VERSION="0.01">' > $(DISTNAME).ppd
-	$(NOECHO) $(ECHO) '    <ABSTRACT></ABSTRACT>' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '    <ABSTRACT>dsn rewriter for debug</ABSTRACT>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <AUTHOR>cho45 &lt;cho45@lowreal.net&gt;</AUTHOR>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <IMPLEMENTATION>' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="DBD::SQLite" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="DBI::" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="ExtUtils::MakeMaker" VERSION="6.52" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="File::Slurp" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Filter::Util::Call" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Test::More" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <ARCHITECTURE NAME="darwin-2level-5.8" />' >> $(DISTNAME).ppd
