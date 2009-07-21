@@ -15,18 +15,19 @@ sub import {
 	my ($class, %opts) = @_;
 	if ($opts{-file}) {
 		$filename = $opts{-file};
+		$RULES = File::Slurp::slurp($filename);
+		$class->enable;
+	}
+	if ($opts{-rules}) {
+		$RULES = $opts{-rules};
 		$class->enable;
 	}
 }
 
 sub enable {
 	my ($class) = @_;
-	{
-		no warnings 'redefine';
-		*DBI::connect = \&_connect;
-	}
-
-	$RULES = File::Slurp::slurp($filename);
+	no warnings 'redefine';
+	*DBI::connect = \&_connect;
 }
 
 sub disable {
