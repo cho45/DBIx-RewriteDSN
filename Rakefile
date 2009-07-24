@@ -31,6 +31,11 @@ end
 desc "release"
 task :release => :shipit
 
+desc "shipit"
+task :shipit => ["MANIFEST"] do
+	sh %{shipit}
+end
+
 file "Makefile" => ["Makefile.PL"] do
 	sh %{perl Makefile.PL}
 end
