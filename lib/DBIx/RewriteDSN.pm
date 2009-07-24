@@ -9,17 +9,19 @@ use File::Slurp;
 
 my $orig_connect = \&DBI::connect;
 my $filename;
-my $RULES;
+my $RULES = "";
 
 sub import {
 	my ($class, %opts) = @_;
 	if ($opts{-file}) {
 		$filename = $opts{-file};
-		$RULES = File::Slurp::slurp($filename);
-		$class->enable;
+		$RULES .= File::Slurp::slurp($filename) . "\n";
 	}
 	if ($opts{-rules}) {
-		$RULES = $opts{-rules};
+		$RULES .= $opts{-rules} . "\n";
+	}
+
+	if ($RULES && $ENV{DBI_REWRITE_DSN}) {
 		$class->enable;
 	}
 }
@@ -111,6 +113,8 @@ Enable rewrites based on rules in C<filename>.
 =head2 use DBIx::RewriteDSN -rules => "rules";
 
 Enable rewrites based on rules.
+
+If C<DBI_REWRITE_DSN> is false, import does not anything by default.
 
 =head2 DBIx::RewriteDSN->disable
 

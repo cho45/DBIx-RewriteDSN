@@ -19,6 +19,7 @@ no_index:
   directory:
     - inc
     - t
+    - xt
 requires:
   DBI: 0
   File::Slurp: 0

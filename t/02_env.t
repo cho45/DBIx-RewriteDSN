@@ -1,5 +1,5 @@
 use strict;
-use Test::More tests => 7;
+use Test::More tests => 6;
 
 use File::Temp;
 use DBD::SQLite;
@@ -8,6 +8,8 @@ my $fh;
 my ($db1, $db1name);
 my ($db2, $db2name);
 BEGIN {
+	$ENV{DBI_REWRITE_DSN} = 1;
+
 	$db1 = File::Temp->new;
 	$db1->close;
 	$db1name = $db1->filename;
@@ -39,13 +41,9 @@ is DBIx::RewriteDSN::rewrite("dbi:rewrite:comment"), "dbi:fallback";
 
 my $dbh;
 
-$dbh = DBI->connect("dbi:SQLite:dbname=$db1name", "", "");
-is $dbh->{Name}, "dbname=$db1name", "disabled by default";
-
-DBIx::RewriteDSN->enable;
 
 $dbh = DBI->connect("dbi:SQLite:dbname=$db1name", "", "");
-is $dbh->{Name}, "dbname=$db2name", "enable";
+is $dbh->{Name}, "dbname=$db2name", 'enable by $ENV{DBI_REWRITE_DSN}=1';
 
 DBIx::RewriteDSN->disable;
 
