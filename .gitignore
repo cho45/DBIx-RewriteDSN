@@ -2,3 +2,7 @@ inc
 Makefile
 blib
 pm_to_blib
+MANIFEST
+Makefile.old
+META.yml
+
