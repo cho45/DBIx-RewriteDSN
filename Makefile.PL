@@ -4,8 +4,9 @@ all_from 'lib/DBIx/RewriteDSN.pm';
 
 requires $_ for (qw/ DBI File::Slurp /);
 
-build_requires 'Test::More';
-build_requires 'DBD::SQLite';
+test_requires 'Test::More';
+# test_requires 'DBD::SQLite';
+
 use_test_base;
 auto_include;
 WriteAll;

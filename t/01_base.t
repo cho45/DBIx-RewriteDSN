@@ -2,7 +2,8 @@ use strict;
 use Test::More tests => 7;
 
 use File::Temp;
-use DBD::SQLite;
+eval { use DBD::SQLite; };
+plan skip_all => "DBD::SQLite is not installed." if $@;
 
 my $fh;
 my ($db1, $db1name);
