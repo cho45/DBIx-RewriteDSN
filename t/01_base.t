@@ -21,6 +21,7 @@ BEGIN {
 	$fh->print(<<"	EOS");
 		dbi:rewrite:foo dbi:rewrote:foo
 		(dbi:rewrite:through) \$1
+		dbi:rewrite:backslash dbi:rewrite:\\BACKSLASH
 
 		# dbi:rewrite:comment unko
 
@@ -37,6 +38,7 @@ use DBIx::RewriteDSN -file => $fh->filename;
 is DBIx::RewriteDSN::rewrite("dbi:rewrite:foo"), "dbi:rewrote:foo";
 is DBIx::RewriteDSN::rewrite("dbi:rewrite:through"), "dbi:rewrite:through";
 is DBIx::RewriteDSN::rewrite("dbi:rewrite:comment"), "dbi:fallback";
+is DBIx::RewriteDSN::rewrite("dbi:rewrite:backslash"), "dbi:rewrite:\\BACKSLASH";
 
 my $dbh;
 
