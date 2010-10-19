@@ -1,8 +1,8 @@
 use strict;
-use Test::More tests => 6;
+use Test::More;
 
 use File::Temp;
-eval { use DBD::SQLite; };
+eval 'use DBD::SQLite';
 plan skip_all => "DBD::SQLite is not installed." if $@;
 
 my $fh;
@@ -56,3 +56,4 @@ DBIx::RewriteDSN->enable;
 $dbh = DBI->connect("dbi:SQLite:dbname=$db1name", "", "");
 is $dbh->{Name}, "dbname=$db2name", "re-enable";
 
+done_testing;
