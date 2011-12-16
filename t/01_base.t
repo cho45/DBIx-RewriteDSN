@@ -60,5 +60,11 @@ DBIx::RewriteDSN->enable;
 $dbh = DBI->connect("dbi:SQLite:dbname=$db1name", "", "");
 is $dbh->{Name}, "dbname=$db2name", "re-enable";
 
+is DBIx::RewriteDSN::rewrite("dbi:rewrite:foo"), "dbi:rewrote:foo";
+
+DBIx::RewriteDSN->prepend_rules('dbi:rewrite:foo dbi:rewrote:prepended');
+
+is DBIx::RewriteDSN::rewrite("dbi:rewrite:foo"), "dbi:rewrote:prepended";
+
 done_testing;
 
